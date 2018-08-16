@@ -1,0 +1,102 @@
+<img src="{{ url_for('static',filename='img/banner.png') }}">
+
+<ol>
+    <li>
+        <h2>Current</h2>
+        <code>Current <b>Laffka</b> version: 0.09, prerelease</code>
+        <strong>Release is scheduled to 12.8.2018</strong>
+    </li>
+    <li>
+        <h2>What is it?</h2>
+        I have always dreamed to own small shop in Tor land. Easy to install, simple to run. Sadly no solution was found, <i>torshop</i> was definite scam, and so <b>Laffka</b> was started.<br>
+        In the beginning I wanted to make small shop for myself, but after few weeks of development, instead of peddling crap around, I've decided to make it dedicated open source project.<br>
+        What makes <b>Laffka</b> special? It is extremely lightweight, runs on the flask, written in Python and <b>doesn't require downloading of blockchain</b>. You are complete and sole owner of your private keys, and free to inspect and/or change code as desired.<br>
+        Database engine used in project is SQLite, and is also quite lightweight, with no requirements of installation.<br>
+        Few words regarding payments - how do they work? Quite simple scheme. Script generates bitcoin address from private mnemonic and remembers private key for address, which can later be sweeped, thus delivering payment for a cost of transaction into your wallet. More about that later.<br>
+        You can observe <b>Laffka</b> in action at <a href="http://sporeikzj77hnrxq.onion/">sporeikzj77hnrxq.onion</a><br>
+        Or visit <a href="https://www.reddit.com/r/darknet/comments/92mnvp/laffka_opensource_torshopbitcoin/">Laffka thread at Reddit</a><br>
+        Contact me on <a href="mailto:e.tuidhana@yandex.ru">e.tuidhana@yandex.ru</a> or on Wickr - <b><i>beardling</i></b>
+    </li>
+    <li>
+        <h2>Requirements</h2>
+        Linux (Centos 7.4 works excellent)<br>
+        Python3,python3-pip<br>
+        pip dependancies: flask, requests, requests, Flask-apscheduler, flask-WTF, bitmerchant,flask-Login, flask-session<br>
+        <hr>
+    </li>
+    <li><h2>Laffka PGP Key</h2></li>
+    <pre>
+        -----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
+
+Here is signed by http://silkkitiehdg5mug.onion/faceless
+PGP Key of Laffka!
+- -----BEGIN PGP PUBLIC KEY BLOCK-----
+Version: GnuPG v2
+
+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
+KULHEysQVKJS
+=Mz2W
+- -----END PGP PUBLIC KEY BLOCK-----
+PGP Key of Laffka ends.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBAgAGBQJbbaQPAAoJEEuIauo+qFrQzsEP/2vbVfUrRBe8ujw+OJ8JDQ0e
+qAyEoBocDH4Yd61sGdx3fN4uMXksQxoPs3Y3PUvOFdlFZUcjEdZIdMb1aHhpmWQJ
+oF3uw7w+WlcZTcBGxxEWflLis6QOvmVsJ2YUx+5A9s2rim32iy3PzFOo7GKvyfzE
+gRbRIKwV7zchhEq4b4NoT4M/4eFVgzOVZ3G6KLW1Yn4lYI8a2CPtvHzNQsLI/7ic
+FTYQogl267mkJCUbScVJ7h/yWqDNzbFPmCxN4WQkF8U4jh8BPvg2nAu4jVzFZAMr
+eX9NpNRhmWEE1jF/v2pl6d1lidubwAHbdQQzz0AKVyLXvsTlQpm7cyvhNakRKNDf
+Rgr/FqjmVnTOK8ALnvozZPYwvxGrZkk1Iul0/WBF71x+uS9vpqaF7tnkrTUrCGmI
+zQ+cp6599HufD7y53hVYBSEK5kM5GpYcm+ZqQBi6Xe2BrGEdABpu4pAJD/MJy6VP
+Qa0dJkOAaU6v1cqb9WpAeS6evNqeK4JxR/VF80jI8QS0uCZisHlIw+MlhTRgnDz1
+CQQkQNcm6RPWc37qDbiygs4KOWD7gIKflefIOo98vGvQ6mkywLCSsjWa55iZTY8d
+cNZx7wO8BjnOWabd7mq7odSKInpmvaoNixxuS0s/g7PLZR5CXGdxRWlT3mfyM3pX
+E03iD6097cjB5U4+Z1yr
+=dpCy
+-----END PGP SIGNATURE-----
+
+    </pre>
+    <li>
+        <h2>Thanks to:</h2>
+        <a href="https://www.blocktrail.com/BTC/address/1FwJdVgMZHK6WWX9t9GJnBnSVrSqfqkARB/transactions"">First <b>Laffka</b> sale! Thanks!</a>
+    </li>
+
+</ol>
+
+<pre><a href="https://www.reddit.com/r/darknet/comments/92mnvp/laffka_opensource_torshopbitcoin/">Laffka@reddit</a></pre>
+Official projects journal and announcements <a href="https://www.reddit.com/r/darknet/comments/92mnvp/laffka_opensource_torshopbitcoin/"> @reddit</a><br>

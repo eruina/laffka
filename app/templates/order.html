@@ -1,0 +1,23 @@
+<html>
+    <head>
+        <title>{{header}} - ordering {{item.name}}</title>
+        <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='css/normalize.css') }}">
+    </head>
+    <body>
+        {% include "header.html"%}
+        <h2>You are ordering {{amount}}x[{{item.name}}]</h2>
+        <pre>{{item.desc}}</pre><hr>
+        <pre>
+            You are ordering {{amount}} pc's of {{item.name}}
+            Price is <b>{{item.price*amount}} €</b>, with current rate it makes <b>{{((item.price/rate)*amount) | round(6,'floor')}}</b><br>
+        <form action="/payment" method="post">
+
+
+        Enter address please and possible instructions
+        {{form.address(cols="35", rows="20")}}
+            <input type="hidden" value="{{amount}}" name="amount">
+            <input type="hidden" value="{{index}}" name="index">
+        <input type="submit">
+        </form>
+        </pre>
+    </body>

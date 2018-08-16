@@ -1,0 +1,72 @@
+<html>
+    <head>
+        <title>{{header}} - Orders</title>
+        <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='css/normalize.css') }}">
+    </head>
+    <body>
+        {% include "header.html"%}
+        <h1>Orders:</h1>
+        {% for order in orders %}
+        <form method="post" action="/admin_order">
+        <table border="1" width="100%" >
+          <tr>
+              <td width="50px">
+                  <h2><b>Address:</b></h2>
+                  <hr width="50%">
+                  {% autoescape false %}
+                  {{ order.address | replace("|", "<br/>") }}
+                  {% endautoescape %}
+              </td>
+              <td>
+                  <h2><b>{{order.item_name}}</b> x <u>{{order.item_amount}} pcs</u></h2>
+                  <small><b>{{order.paid}}/</b>{{order.order_price}} (paid vs price)</small><br>
+
+
+              Wif key for sweeping:<input type="text" disabled="true" style='width:40em' value="{{order.wif}}"><br>
+             {% if order.note is not none %}
+                  <pre>{{order.note}}</pre>
+             {% else %}
+                  <i>--**No note**--</i>
+             {% endif %}
+             <input type="hidden" name="order_index" value="{{order.index}}">
+
+
+              </td>
+
+          </tr>
+        </table>
+        {% if order.note is none %}
+        <input type="text" name="note">
+        <input type="submit" value="Submit note to order {{order.index}}">
+        {% else %}
+        <input type="submit" value="Delete note from order {{order.index}}">
+        {% endif %}
+
+        </form>
+        <br>
+        {% endfor %}
+        <hr>
+        <h1>Items:</h1>
+        <h2><a href="/add_item"><button>Add item</button></a></h2>
+        {% for item in items %}
+        <h2>{{item.name}}</h2>
+        <form method="post" action="/admin_item" id="{{item.index}}">
+        <table border="1" width="100%" >
+            <tr><td>
+                <input type="hidden" value="{{item.index}}" name="index">
+                Name:<input type="text" value="{{item.name}}" name="name">
+                Price: <input type="text" value="{{item.price}}" name="price"><br>
+                Avail (0 - hidden, -1 - infinite, otherwise amount):<input type="text" value="{{item.avail}}" name="avail">
+                List:<input type="text" value="{{item.pcs}}" name="pcs">
+                Description:<br>
+                <textarea name="description" form="{{item.index}}" cols="100" rows="7">{{item.desc}}</textarea>
+                <input type="submit" value="Submit channge to item {{item.index}}">
+                <a href="/delete_item/{{item.index}}"><input value="Delete {{item.name}}" type="button"></a>
+            </td></tr>
+        </table>
+        </form>
+        <hr>
+        {% endfor %}
+        <h2><a href="/add_item" class="button"><button>Add item</button></a></h2>
+
+    </body>

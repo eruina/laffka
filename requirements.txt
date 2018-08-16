@@ -1,0 +1,8 @@
+    Flask
+    requests
+    Flask-APScheduler
+    Flask-WTF
+    bitmerchant
+    Flask-Login
+    Flask-Session
+    waitress

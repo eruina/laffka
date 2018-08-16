@@ -1,0 +1,15 @@
+<html>
+    <head>
+        <title>{{header}} - {{order.btc_address}}</title>
+        <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='css/normalize.css') }}">
+    </head>
+    <body>
+    {% include "header.html"%}
+    <h2>Order id:{{order.address_salt}}</h2>
+    <i><a href="/pay/{{order.btc_address}}">Please. save this link to check on order status</a></i><hr>
+    Please, pay <b>{{order.order_price}}</b> to <b>{{order.btc_address}}</b>
+    <a href="bitcoin:{{order.btc_address}}?amount={{order.order_price}}">Payment link</a><hr>
+    Already paid: <b>{{order.paid}}</b>
+
+    </body>
+</html>
