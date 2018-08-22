@@ -1,3 +1,7 @@
+# Wiki for instructions!
+https://github.com/eruina/laffka/wiki
+
+
 # Laffka
 >Opensource torshop application written in Python 3, and powered by Flask.
 1. [ Introduction ](#introduction)
