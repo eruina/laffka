@@ -3,7 +3,7 @@ MAINTAINER x0rzkov
 
 LABEL version=3.7-alpine
 
-ENV FLASK_APP=app.py \
+ENV FLASK_APP=laffka.py \
 	FLASK_RUN_HOST=0.0.0.0
 
 RUN apk add --no-cache nano jq bash
