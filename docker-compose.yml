@@ -1,0 +1,19 @@
+version: '3'
+services:
+  web:
+    build: .
+    ports:
+      - "5000:5000"
+    volumes:
+      - .:/code
+
+  redis:
+    image: "redis:alpine"
+    ports:
+            - "6379:6379"
+    volumes:
+            - db-data:/data
+
+volumes:
+    db-data:
+
