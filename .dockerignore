@@ -1,0 +1,5 @@
+*.pyc
+.git
+.git/
+.git/*
+.git/**
