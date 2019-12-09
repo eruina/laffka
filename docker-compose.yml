@@ -6,11 +6,12 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    environnement:
+    environment:
       FLASK_APP: laffka.py
       FLASK_RUN_HOST: 0.0.0.0
     ports:
     - "5000:5000"
+    - "5678:5678"
     volumes:
     - .:/opt/laffka
     restart: unless-stopped
