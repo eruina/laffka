@@ -1,0 +1,45 @@
+---
+version: '3.7'
+services:
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      FLASK_APP: laffka.py
+      FLASK_RUN_HOST: 0.0.0.0
+    ports:
+    - "5000:5000"
+    - "5678:5678"
+    volumes:
+    - .:/opt/laffka
+    restart: unless-stopped
+    # command: ["flask", "run"]
+
+  mariadb:
+    image: mariadb:latest
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: supercow
+      MYSQL_DATABASE: laffka
+      MYSQL_USER: laffka
+      MYSQL_PASSWORD: laffka
+    ports:
+    - "3306:3306"
+    volumes:
+    - ./db/config:/etc/mysql/conf.d
+    - db-data:/var/lib/mysql
+    restart: unless-stopped
+
+  redis:
+    image: "redis:alpine"
+    ports:
+    - "6379:6379"
+    volumes:
+    - kv-data:/data
+    restart: unless-stopped
+
+volumes:
+    db-data:
+    kv-data:

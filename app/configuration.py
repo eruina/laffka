@@ -1,14 +1,14 @@
 class Configuration():
     #provide user and password, as well as 12 words mnemonic
-    user=''
-    password=''
-    btc_master_key = ''
+    user='admin'
+    password='admin'
+    btc_master_key = 'todo'
 
     secret_key='supersecretkey' #change those
     salt = 'salt' #address salt in db for order id
 
     shop_name="Laffkashop" #Shop name
-    shop_url="laffka6wwduoexvb.onion" #shop url
+    shop_url="localhost" #shop url
 
     database_url = './db/main'  #database location
     wtf_csrf = True
