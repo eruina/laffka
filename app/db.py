@@ -53,6 +53,11 @@ class Database:
         self.db_connection= sqlite3.connect(configuration.Configuration.database_url)
         self.db_cursor=self.db_connection.cursor()
 
+    def init_db(self):
+        with open('db/init.sql', 'r') as f:
+            self.db_cursor.executescript(f.read())
+            self.db_connection.commit()
+
     def update_btc_rate(self,rate):
         '''
         Updates rate in database from instance property

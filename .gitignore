@@ -2,6 +2,8 @@ refs
 refs/
 refs/*
 refs/**
+app/configuration.py
+db/main
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
