@@ -28,6 +28,7 @@ def show_item(index):
         abort(404)
     else:
         return  render_template('item.html',index=index,item=item1,rate=bitcoin.btc_eur,header=configuration.Configuration.header)
+
 @app.route('/order/<index>/<amount>')
 def order_item(index,amount):
     index=re.sub('[^0-9]', '', index)
@@ -45,6 +46,7 @@ def order_item(index,amount):
             address=TextAreaField('Address', [validators.Length(min=10, max=200)])
         order_form=OrderForm()
         return render_template('order.html',item=item1, index=index,rate=bitcoin.btc_eur, amount=int(amount),form=order_form,header=configuration.Configuration.header)
+
 @app.route('/payment', methods=['POST'])
 def pay_for_order ():
     data=request.form
@@ -71,6 +73,7 @@ def pay_for_order ():
     order=Bitcoin.order(item_index,address,address_hash,item_amount,order_price)
     #print (order.order_index)
     return redirect("/pay/"+str(order.btc_address))
+
 @app.route('/pay/<btc_address>')
 def present_payment(btc_address):
     btc_address=re.sub('[^A-Za-z0-9]','',btc_address)
@@ -109,6 +112,7 @@ def login():
             #print (session)
             return redirect ('/c')
     return render_template('login.html', form=form,header=configuration.Configuration.header)
+
 @app.route('/logout')
 def logout():
     if 'adminkey' not in session:
@@ -118,6 +122,7 @@ def logout():
     session['adminkey']=''
     return redirect('/')
     abort(404)
+
 @app.route('/c')
 def console():
     if 'adminkey' not in session:
@@ -142,6 +147,7 @@ def console():
         required_items.append(item)
     items=required_items
     return render_template('admin.html',orders=orders,items=items,header=configuration.Configuration.header)
+
 @app.route('/admin_order', methods=['POST'])
 def admin_order():
     if 'adminkey' not in session:
@@ -156,6 +162,7 @@ def admin_order():
         database.create_note(data['order_index'],data['note'])
 
     return redirect('/c')
+
 @app.route('/admin_item', methods=['POST'])
 def admin_item():
     if 'adminkey' not in session:
@@ -173,6 +180,7 @@ def admin_item():
     database=Database()
     database.update_item(item_index,item_price,item_name,item_avail,item_description,item_pcs)
     return redirect('/c')
+
 @app.route('/delete_item/<item>')
 def delete_item(item):
     if 'adminkey' not in session:
@@ -182,6 +190,7 @@ def delete_item(item):
     database=Database()
     database.delete_item(item)
     return redirect('/c')
+
 @app.route('/add_item')
 def add_item():
     if 'adminkey' not in session:

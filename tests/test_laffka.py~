@@ -2,6 +2,7 @@ import os
 import laffka
 import unittest
 import tempfile
+import hashlib
 from lxml import html
 from app import configuration
 from app import db
@@ -10,13 +11,14 @@ class LaffkaTestCase(unittest.TestCase):
     def setUp(self):
         self.db_fd, configuration.Configuration.database_url = tempfile.mkstemp()
         self.app = laffka.app.test_client()
+        self.app.testing=True
         database = db.Database()
         database.init_db()
 
     def tearDown(self):
         os.close(self.db_fd)
         os.unlink(configuration.Configuration.database_url)
-
+        
     def test_empty_db(self):
         rv = self.app.get('/')
         assert b'Laffka' in rv.data
@@ -34,6 +36,12 @@ class LaffkaTestCase(unittest.TestCase):
     def logout(self):
         return self.app.get('/logout', follow_redirects=True)
 
+    def set_session(self):
+        admin_key=hashlib.sha224(configuration.Configuration.secret_key.encode('utf-8')).hexdigest()
+        with self.app as c:
+            with c.session_transaction() as sess:
+                sess['adminkey'] = admin_key
+        
     def test_login_logout(self):
         rv = self.login('test', 'test')
         assert b'Orders' in rv.data
@@ -43,6 +51,18 @@ class LaffkaTestCase(unittest.TestCase):
         assert b'Login' in rv.data
         rv = self.login('test', 'testx')
         assert b'Login' in rv.data
+
+    def test_update_item(self):
+        self.set_session()
+        rv = self.app.post('/admin_item', data=dict(
+            name='test item',
+            price=1,
+            avail=-1,
+            description='A truly useless stuff',
+            index=1,
+            pcs='1,5,10'
+        ), follow_redirects=True)
+        assert b'A truly useless stuff' in rv.data
 
 if __name__ == '__main__':
     unittest.main()

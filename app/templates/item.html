@@ -6,13 +6,15 @@
     <body>
         {% include "header.html"%}
         <h2>{{item.name}}</h2>
-        <pre>{{item.desc}}</pre><hr>
-        <h2>Buy:
+        {{item.desc}}<hr>
+        <h2>Buy</h2>
+	  <form action="/add" method="POST">
+	  <select>
             {% for pc in item.pcs %}
-            <a href="/order/{{index}}/{{pc}}">({{pc}}pc={{(item.price/rate*pc) | round(4,'floor')}}btc)</a>
+	    <option value="{{pc}}">{{pc}} ({{(item.price/rate*pc) | round(5,'floor')}}btc)</option>
             {% endfor %}
-
-        </h2>
+	  </select>
+	  <input type="submit">Add to cart</input>
         Price(€/kpl):{{item.price}}<br>
         Price(btc/kpl):{{(item.price/rate) | round(4,'floor')}}<br>
     <hr><small>1 BTC={{rate}}€ - {% include "footer.html"%}</small>

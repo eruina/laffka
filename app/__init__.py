@@ -1,4 +1,3 @@
-
 from flask import Flask, session
 import app.bitcoin
 import atexit
@@ -43,5 +42,3 @@ app.config['WTF_CSRF_ENABLED']=configuration.Configuration.wtf_csrf
 app.config['SECRET_KEY']=configuration.Configuration.secret_key
 
 from app import routes
-from app import routes
-

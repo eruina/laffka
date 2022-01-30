@@ -33,7 +33,7 @@ class Database:
             self.note=row[11]
             self.item_name=''
 
-    class row: #listing class, with apropriate attributes, like name
+    class item: #listing class, with apropriate attributes, like name
         name=''
         index=-1
         price=''
@@ -100,7 +100,7 @@ class Database:
         self.db_cursor.execute('SELECT * FROM items')
         items=[]
         for item_row in self.db_cursor.fetchall():
-            items.append(self.row(item_row))
+            items.append(self.item(item_row))
         return items
 
 
@@ -119,7 +119,7 @@ class Database:
         if item is None:
             return None
         else:
-            return_row=self.row(item)
+            return_row=self.item(item)
             return return_row
     def make_order(self,item_index,address,address_salt,item_amount,order_price): #pairedd with update_order, making new order
         '''

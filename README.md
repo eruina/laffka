@@ -8,6 +8,8 @@ https://github.com/sginne/Allium
 # Wiki for instructions!
 https://github.com/eruina/laffka/wiki
 
+# Todo
+https://roytuts.com/simple-shopping-cart-using-python-flask-mysql/
 
 # Time roll
 05.07.2019 I am finally over, and ready to take Laffka back under development.

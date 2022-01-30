@@ -6,10 +6,11 @@ if Configuration.btc_master_key=='':
     quit('Please edit app/configuration.py')
 
 #Switch between waitress and development flask, if debugging/port not set, serving development on 5000
-try:
-    if Configuration.debugging==True:
-        app.run(host='127.0.0.1',port=Configuration.port)
-    else:
-        serve(app,host='127.0.0.1', port=Configuration.port)
-except AttributeError:
-    serve(app, host='127.0.0.1', port=5000)
+if __name__ == '__main__':
+    try:
+        if Configuration.debugging==True:
+            app.run(host='127.0.0.1',port=Configuration.port)
+        else:
+            serve(app,host='127.0.0.1', port=Configuration.port)
+    except AttributeError:
+        serve(app, host='127.0.0.1', port=5000)
