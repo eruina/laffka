@@ -6,7 +6,7 @@
     <body>
         {% include "header.html"%}
         <h2>{{item.name}}</h2>
-        {{item.desc}}<hr>
+        {{item.desc|safe}}<hr>
         <h2>Buy</h2>
 	  <form action="/add" method="POST">
 	  <select>
@@ -14,7 +14,9 @@
 	    <option value="{{pc}}">{{pc}} ({{(item.price/rate*pc) | round(5,'floor')}}btc)</option>
             {% endfor %}
 	  </select>
-	  <input type="submit">Add to cart</input>
+	  <br>
+	  <input type="submit" value="Add to cart"></input>
+	  </form>
         Price(€/kpl):{{item.price}}<br>
         Price(btc/kpl):{{(item.price/rate) | round(4,'floor')}}<br>
     <hr><small>1 BTC={{rate}}€ - {% include "footer.html"%}</small>

@@ -85,8 +85,8 @@ class ItemDetailsPage(LaffkaTestCase) :
         assert select == ['1','5','10']
 
     def testAddToCart(self):
-        submit = self.tree.xpath('//form//input[type="submit"]')
-        assert b'Add to cart' in submit
+        submit = self.tree.xpath('//form[@action="/add"]/input[@type="submit"]/@value')
+        assert 'Add to cart' in submit
     
 if __name__ == '__main__':
     unittest.main()
