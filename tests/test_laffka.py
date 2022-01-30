@@ -51,16 +51,16 @@ class LaffkaTestCase(unittest.TestCase):
         ), follow_redirects=True)
 
 class LoginLogout(LaffkaTestCase):
-    def onLoginSuccessShouldDisplayOrders(self):
+    def testOnLoginSuccessShouldDisplayOrders(self):
         rv = self.login('test', 'test')
         assert b'Orders' in rv.data
 
-    def onLogoutShouldDisplayLogin(self):
+    def testOnLogoutShouldDisplayLogin(self):
         self.login('test', 'test')
         rv = self.logout()
         assert b'Login' in rv.data
 
-    def onLoginFailureShouldDisplayLogin(self):
+    def testOnLoginFailureShouldDisplayLogin(self):
         rv = self.login('testx', 'test')
         assert b'Login' in rv.data
         rv = self.login('test', 'testx')
@@ -78,15 +78,15 @@ class ItemDetailsPage(LaffkaTestCase) :
         self.tree = html.fromstring(self.rv.data)
         
     def testItemOneDescriptionIsUselessStuffWithHtml(self):
-        assert b'A truly <b>useless</b> stuff' in self.rv.data
+        self.assertIn(b'A truly <b>useless</b> stuff',self.rv.data)
 
     def testItemDetailsSelectorContains1and5and10(self):
         select = self.tree.xpath('//select//option/@value')
-        assert select == ['1','5','10']
+        self.assertEqual(['1','5','10'], select)
 
     def testAddToCart(self):
         submit = self.tree.xpath('//form[@action="/add"]/input[@type="submit"]/@value')
-        assert 'Add to cart' in submit
+        self.assertIn('Add to cart', submit)
     
 if __name__ == '__main__':
     unittest.main()
