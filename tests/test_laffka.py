@@ -67,9 +67,15 @@ class LoginLogout(LaffkaTestCase):
         assert b'Login' in rv.data
 
 class Homepage(LaffkaTestCase):
+    def setUp(self):
+        super().setUp()
+        self.rv = self.app.get('/')
+
     def testItemIsPresentOnHomepage(self):
-        rv = self.app.get('/')
-        assert b'test item' in rv.data
+        assert b'test item' in self.rv.data
+
+    def testShouldContainLinkToCart(self):
+        assert b'href="/cart"' in self.rv.data
 
 class ItemDetailsPage(LaffkaTestCase) :
     def setUp(self):
@@ -87,6 +93,22 @@ class ItemDetailsPage(LaffkaTestCase) :
     def testAddToCart(self):
         submit = self.tree.xpath('//form[@action="/add"]/input[@type="submit"]/@value')
         self.assertIn('Add to cart', submit)
-    
+
+class AddToCartTest(LaffkaTestCase):
+    def setUp(self):
+        super().setUp()
+        self.app.post('/add', data=dict(
+            item=1,
+            quantity=5,
+        ))
+        self.rv = self.app.get('/cart')
+        self.tree = html.fromstring(self.rv.data)
+
+    def testQtyInCartShouldBeFive(self):
+        self.assertEqual(['5'], self.tree.xpath('//td[@id="quantity"]/text()'))
+
+    def testShouldContainsRemoveItemLink(self):
+        self.assertEqual(['/delete/1'], self.tree.xpath('//a[@class="btnRemoveAction"]/@href'))
+        
 if __name__ == '__main__':
     unittest.main()

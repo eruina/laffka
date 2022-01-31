@@ -29,6 +29,61 @@ def show_item(index):
     else:
         return  render_template('item.html',index=index,item=item1,rate=bitcoin.btc_eur,header=configuration.Configuration.header)
 
+@app.route('/empty')
+def empty_cart():
+    session.clear()
+    return redirect('/')
+
+@app.route('/add', methods=['POST'])
+def add_product_to_cart():
+    database=Database()
+    quantity = int(request.form['quantity'])
+    index = request.form['item']
+    item = database.fetch_one_item(index)
+    itemArray =  {'quantity': quantity, 'total_price': quantity * item.price }
+    if quantity and item and request.method == 'POST':
+        all_total_price = 0
+        all_total_quantity = 0
+        session.modified = True
+        if 'cart' in session:
+            if index in session['cart']:
+                for key, value in session['cart'].items():
+                    if index == key:
+                        old_quantity = session['cart'][key]['quantity']
+                        total_quantity = old_quantity + quantity
+                        session['cart'][key]['quantity'] = total_quantity
+                        session['cart'][key]['total_price'] = total_quantity * item.price
+                        break
+            else:
+                session['cart'][index] = itemArray
+
+            for key, value in session['cart'].items():
+                individual_quantity = int(session['cart'][key]['quantity'])
+                individual_price = float(session['cart'][key]['total_price'])
+                all_total_quantity = all_total_quantity + individual_quantity
+                all_total_price = all_total_price + individual_price
+                return redirect('/')
+
+        else:
+            session['cart'] = {index : itemArray}
+            all_total_quantity = quantity
+            all_total_price = quantity * item.price
+            session['all_total_quantity'] = all_total_quantity
+            session['all_total_price'] = all_total_price
+            return redirect('/')
+    else:
+        app.flash('Item not found','error')
+        return redirect('/')
+
+@app.route('/delete/<index>')
+def delete_product(index):
+    app.flash('Item removed from cart','info')
+    return redirect('/cart')
+
+@app.route('/cart')
+def get_cart():
+    return render_template('cart.html')
+
 @app.route('/order/<index>/<amount>')
 def order_item(index,amount):
     index=re.sub('[^0-9]', '', index)

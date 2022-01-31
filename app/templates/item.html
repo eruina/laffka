@@ -8,13 +8,13 @@
         <h2>{{item.name}}</h2>
         {{item.desc|safe}}<hr>
         <h2>Buy</h2>
-	  <form action="/add" method="POST">
-	  <select>
+	  <form action="/add" id="add_to_cart" method="POST">
+	  <select id="quantity" name="quantity" form="add_to_cart">
             {% for pc in item.pcs %}
 	    <option value="{{pc}}">{{pc}} ({{(item.price/rate*pc) | round(5,'floor')}}btc)</option>
             {% endfor %}
 	  </select>
-	  <br>
+	  <input type="hidden" name="item" value="{{item.index}}">
 	  <input type="submit" value="Add to cart"></input>
 	  </form>
         Price(€/kpl):{{item.price}}<br>
