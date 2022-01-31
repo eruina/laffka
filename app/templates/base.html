@@ -1,31 +1,11 @@
 <html>
-    <head>
-        <title>{{header}}</title>
-        <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='css/normalize.css') }}">
-    </head>
-    <body>
-        {% include "header.html"%}
-        <hr>{% include "disclaimer.html" %}<hr>
-        <h1>In store:</h1>
-        <table class="table">
-            <caption>
-           <tr>
-           <th>Item</th>
-           <th>Price/€</th>
-           <th>Price/btc</th>
-               <th>Storage</th>
-           </tr>
-       </caption>
-       {% for item in items %}
-       <tr>
-           <td><a href="/item/{{item[1]}}">{{item[0]}}</a></td>
-		   <td>{{"%.2f"|format(item[2])}}</td>
-           <td>{{(item[2]/rate) | round(4,'floor')}}</td>
-           <td>{% if item[3]<0 %}In store{% else %}{{item[3]}} pcs{% endif %}</td>
-	   </tr>
-       {% endfor %}
-       </table>
-            <hr>
-            <small>1 BTC={{rate}}€ - {% include "footer.html"%}</small>
-    </body>
+  <head>
+    <title>{{header}}</title>
+    {% include "head.html"%}
+  </head>
+  <body>
+    {% include "menu.html"%}
+    <hr>{% include "disclaimer.html" %}<hr>
+    <small>1 BTC={{rate}}€ - {% include "footer.html"%}</small>
+  </body>
 </html>

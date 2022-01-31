@@ -1,0 +1,12 @@
+ul {
+ list-style-type:none;
+}
+
+ul li a {
+ display:block;
+ float:left;   
+}
+
+ul li a:hover {
+ background-color:#D3D3D3;
+}

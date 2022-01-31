@@ -1,7 +1,13 @@
 <html>
+  <head>
+    <title>Shopping Cart</title>
+    {% include "head.html" %}
+  </head>
   <body>
+    {% include "menu.html" %}
+    <hr/>
+    <h1>Shopping Cart</h1>
     <div id="shopping-cart">
-      <div class="txt-heading">Shopping Cart</div>		
       {% if 'cart' in session %}
       <a id="btnEmpty" href="{{ url_for('.empty_cart') }}">Empty Cart</a>
       <table class="tbl-cart" cellpadding="10" cellspacing="1">

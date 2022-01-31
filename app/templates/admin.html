@@ -4,7 +4,7 @@
         <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='css/normalize.css') }}">
     </head>
     <body>
-        {% include "header.html"%}
+        {% include "menu.html"%}
         <h1>Orders:</h1>
         {% for order in orders %}
         <form method="post" action="/admin_order">

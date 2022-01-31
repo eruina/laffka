@@ -11,11 +11,16 @@ import hashlib
 
 @app.route('/')
 def index():
+    bitcoin=Bitcoin()
+    return render_template('base.html', rate=bitcoin.btc_eur, header=configuration.Configuration.header)
+
+@app.route('/products')
+def list_items():
     database=Database()
     bitcoin=Bitcoin()
     database.db_cursor.execute('SELECT * FROM items WHERE visible!=0')
     items = database.db_cursor.fetchall()
-    return render_template('base.html', items=items, rate=bitcoin.btc_eur, header=configuration.Configuration.header)
+    return render_template('products.html', items=items, rate=bitcoin.btc_eur, header=configuration.Configuration.header)
 
 @app.route('/item/<index>')
 def show_item(index):
@@ -82,7 +87,7 @@ def delete_product(index):
 
 @app.route('/cart')
 def get_cart():
-    return render_template('cart.html')
+    return render_template('cart.html', header=configuration.Configuration.header)
 
 @app.route('/order/<index>/<amount>')
 def order_item(index,amount):
