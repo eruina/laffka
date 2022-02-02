@@ -15,6 +15,7 @@ class LaffkaTestCase(unittest.TestCase):
         database = db.Database()
         database.init_db()
         self.add_item()
+        self.add_hidden_item()
 
     def tearDown(self):
         os.close(self.db_fd)
@@ -44,9 +45,20 @@ class LaffkaTestCase(unittest.TestCase):
         rv = self.app.post('/admin_item', data=dict(
             name='test item',
             price=1,
-            avail=-1,
+            avail=100,
             description='A truly <b>useless</b> stuff',
             index=1,
+            pcs='1,5,10'
+        ), follow_redirects=True)
+
+    def add_hidden_item(self):
+        self.set_session()
+        rv = self.app.post('/admin_item', data=dict(
+            name='hidden item',
+            price=1,
+            avail=0,
+            description='A truly <b>invisible</b> stuff',
+            index=2,
             pcs='1,5,10'
         ), follow_redirects=True)
 
@@ -78,9 +90,18 @@ class ProductsPage(LaffkaTestCase):
     def setUp(self):
         super().setUp()
         self.rv = self.app.get('/products')
+        self.tree = html.fromstring(self.rv.data)        
 
     def testItemIsPresentOnProductsPage(self):
         assert b'test item' in self.rv.data
+
+    def testItemDetailsSelectorContains1and5and10(self):
+        select = self.tree.xpath('//select//option/@value')
+        self.assertEqual(['1','5','10'], select)
+
+    def testAddToCart(self):
+        submit = self.tree.xpath('//form[@action="/add"]/input[@type="submit"]/@value')
+        self.assertIn('Add to cart', submit)
 
 class ItemDetailsPage(LaffkaTestCase) :
     def setUp(self):
@@ -117,6 +138,9 @@ class CartTest(LaffkaTestCase):
 
     def testShouldContainsLinkToHomepage(self):
         self.assertIsNotNone(self.tree.xpath('//a[@href="/"]'))
-    
+
+    def testTotalShouldBeFive(self):
+        self.assertEqual(['5.0'], self.tree.xpath('//td[@class="total_price"]/text()'))
+        
 if __name__ == '__main__':
     unittest.main()

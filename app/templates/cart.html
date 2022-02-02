@@ -1,11 +1,7 @@
 <html>
-  <head>
-    <title>Shopping Cart</title>
-    {% include "head.html" %}
-  </head>
+  {% include "head.html" %}
   <body>
     {% include "menu.html" %}
-    <hr/>
     <h1>Shopping Cart</h1>
     <div id="shopping-cart">
       {% if 'cart' in session %}
@@ -23,23 +19,24 @@
 	  {% set index = key %}
 	  {% set name = session['cart'][key]['name'] %}
 	  {% set quantity = session['cart'][key]['quantity'] %}
-	  {% set price = session['cart'][key]['unit_price'] %}
-	  {% set item_price = session['cart'][key]['total_price'] %}					
+	  {% set unit_price = session['cart'][key]['unit_price'] %}
+	  {% set item_price = session['cart'][key]['total_price'] %}
 	  <tr>
-	    <td>{{ name }}</td>
+	    <td><a href="{{ url_for('.show_item', index=index) }}">{{ name }}</a></td>
 	    <td id="quantity" style="text-align:right;">{{ quantity }}</td>
-	    <td style="text-align:right;">{{ price }}</td>
+	    <td style="text-align:right;">{{ unit_price }}</td>
 	    <td style="text-align:right;">{{ item_price }}</td>
 	    <td style="text-align:center;">
-	      <a href="{{ url_for('.delete_product', index=index) }}" class="btnRemoveAction"/>
+	      <a href="{{ url_for('.delete_product', index=index) }}" class="btnRemoveAction"/>Remove</a>
 	    </td>
 	  </tr>
 	  {% endfor %}
 	  <tr>
-	    <td colspan="2" align="right">Total:</td>
-	    <td align="right">{{ session['all_total_quantity'] }}</td>
-	    <td align="right" colspan="2"><strong>₹ {{ session['all_total_price'] }}</strong></td>
+	    <td align="right">Total:</td>
+	    <td align="right" class='total_qty'>{{ session['all_total_quantity'] | int }}</td>
 	    <td></td>
+	    <td align="right" class='total_price'>{{ session['all_total_price'] }}</td>
+	    <td><a href="/pay">Pay !</a></td>
 	  </tr>
 	</tbody>
       </table>
@@ -47,5 +44,6 @@
       <div class="no-records">Your Cart is Empty</div>
       {% endif %}
     </div>
+    {% include "footer.html"%}
   </body>
 </html>

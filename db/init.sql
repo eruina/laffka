@@ -24,7 +24,7 @@ CREATE TABLE "items" (
 	`description`	TEXT,
 	`pcs`	TEXT
 );
-INSERT INTO `items` VALUES ('Project hat',1,100.0,-1,'-----BEGIN PGP SIGNED MESSAGE-----
+INSERT INTO `items` VALUES ('Project hat',1,100.0,100,'-----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA256
 
 Donations are pretty much welcome.

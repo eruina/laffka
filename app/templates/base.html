@@ -1,11 +1,8 @@
 <html>
-  <head>
-    <title>{{header}}</title>
-    {% include "head.html"%}
-  </head>
+  {% include "head.html"%}
   <body>
     {% include "menu.html"%}
-    <hr>{% include "disclaimer.html" %}<hr>
-    <small>1 BTC={{rate}}€ - {% include "footer.html"%}</small>
+    {% include "disclaimer.html" %}
+    {% include "footer.html"%}
   </body>
 </html>

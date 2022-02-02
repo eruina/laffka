@@ -27,12 +27,12 @@ def show_item(index):
     index=re.sub('[^0-9]', '', index)
     database=Database()
     bitcoin=Bitcoin()
-    item1=database.fetch_one_item(index)
+    item=database.fetch_one_item(index)
 
-    if item1 is None:
+    if item is None:
         abort(404)
     else:
-        return  render_template('item.html',index=index,item=item1,rate=bitcoin.btc_eur,header=configuration.Configuration.header)
+        return  render_template('item.html',index=index,item=item,rate=bitcoin.btc_eur,header=configuration.Configuration.header)
 
 @app.route('/empty')
 def empty_cart():
@@ -44,41 +44,36 @@ def add_product_to_cart():
     database=Database()
     quantity = int(request.form['quantity'])
     index = request.form['item']
-    item = database.fetch_one_item(index)
-    itemArray =  {'quantity': quantity, 'total_price': quantity * item.price }
-    if quantity and item and request.method == 'POST':
+    item_param = database.fetch_one_item(index)
+    price = item_param.price
+    itemArray =  {'name' : item_param.name, 'quantity': quantity, 'unit_price': price, 'total_price': quantity * price }
+    if quantity and item_param and request.method == 'POST':
         all_total_price = 0
         all_total_quantity = 0
         session.modified = True
         if 'cart' in session:
             if index in session['cart']:
-                for key, value in session['cart'].items():
-                    if index == key:
-                        old_quantity = session['cart'][key]['quantity']
-                        total_quantity = old_quantity + quantity
-                        session['cart'][key]['quantity'] = total_quantity
-                        session['cart'][key]['total_price'] = total_quantity * item.price
-                        break
+                session['cart'][index]['quantity'] += quantity
+                session['cart'][index]['total_price'] += quantity * price
             else:
                 session['cart'][index] = itemArray
 
-            for key, value in session['cart'].items():
-                individual_quantity = int(session['cart'][key]['quantity'])
-                individual_price = float(session['cart'][key]['total_price'])
-                all_total_quantity = all_total_quantity + individual_quantity
-                all_total_price = all_total_price + individual_price
-                return redirect('/')
+            for key, item in session['cart'].items():
+                all_total_quantity += int(item['quantity'])
+                all_total_price += float(item['total_price'])
+            session['all_total_quantity'] = all_total_quantity
+            session['all_total_price'] = all_total_price
+            return redirect('/cart')
 
         else:
             session['cart'] = {index : itemArray}
-            all_total_quantity = quantity
-            all_total_price = quantity * item.price
-            session['all_total_quantity'] = all_total_quantity
-            session['all_total_price'] = all_total_price
-            return redirect('/')
+            session['all_total_price'] = quantity * price
+            session['all_total_quantity'] = quantity
+            return redirect('/cart')
+
     else:
         app.flash('Item not found','error')
-        return redirect('/')
+        return redirect('/products')
 
 @app.route('/delete/<index>')
 def delete_product(index):
@@ -95,9 +90,8 @@ def order_item(index,amount):
     amount=re.sub('[^0-9]', '', amount)
     database=Database()
     bitcoin=Bitcoin()
-    item1=database.fetch_one_item(index)
-    #print(item1.pcs)
-    if item1 is None:
+    item=database.fetch_one_item(index)
+    if item is None:
         return 'Error'
     else:
         from flask_wtf import FlaskForm
@@ -105,7 +99,7 @@ def order_item(index,amount):
         class OrderForm(FlaskForm):
             address=TextAreaField('Address', [validators.Length(min=10, max=200)])
         order_form=OrderForm()
-        return render_template('order.html',item=item1, index=index,rate=bitcoin.btc_eur, amount=int(amount),form=order_form,header=configuration.Configuration.header)
+        return render_template('order.html',item=item, index=index,rate=bitcoin.btc_eur, amount=int(amount),form=order_form,header=configuration.Configuration.header)
 
 @app.route('/payment', methods=['POST'])
 def pay_for_order ():
@@ -127,8 +121,8 @@ def pay_for_order ():
     item_amount=data['amount']
     item_index=re.sub('[^0-9]', '', item_index)
     item_amount=re.sub('[^0-9]', '', item_amount)
-    item1=database.fetch_one_item(item_index)
-    order_price=round(item1.price/bitcoin.btc_eur*float(item_amount),6)
+    item=database.fetch_one_item(item_index)
+    order_price=round(item.price/bitcoin.btc_eur*float(item_amount),6)
     #print (order_price)
     order=Bitcoin.order(item_index,address,address_hash,item_amount,order_price)
     #print (order.order_index)

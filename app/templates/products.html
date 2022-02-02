@@ -1,8 +1,5 @@
 <html>
-  <head>
-    <title>{{header}}</title>
-    {% include "head.html"%}
-  </head>
+  {% include "head.html"%}
   <body>
     {% include "menu.html"%}
     <h1>In store:</h1>
@@ -16,15 +13,30 @@
         </tr>
       </caption>
       {% for item in items %}
+      {% if item[3]!=0 %}
       <tr>
         <td><a href="/item/{{item[1]}}">{{item[0]}}</a></td>
 	<td>{{"%.2f"|format(item[2])}}</td>
         <td>{{(item[2]/rate) | round(4,'floor')}}</td>
-        <td>{% if item[3]<0 %}In store{% else %}{{item[3]}} pcs{% endif %}</td>
+        <td>
+	  <form action="/add" id="add_to_cart" method="POST">
+	    <input type="hidden" name="item" value="{{item[1]}}">
+	    {% if item[3]<0 %}
+	    <input type="hidden" name="quantity" value="1">
+	    {% else %}
+	    <select id="quantity" name="quantity" form="add_to_cart">
+	      {% for pc in item[5].split(',') %}
+	      <option value="{{pc}}">{{pc}} ({{(item[2]/rate*(pc | int)) | round(5,'floor')}}btc)</option>
+	      {% endfor %}
+	    </select>
+	    {% endif %}
+	    <input type="submit" value="Add to cart">
+	  </form>
+	</td>
       </tr>
+      {% endif %}
       {% endfor %}
     </table>
-    <hr>
-    <small>1 BTC={{rate}}€ - {% include "footer.html"%}</small>
+    {% include "footer.html"%}
   </body>
 </html>
