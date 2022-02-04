@@ -145,6 +145,17 @@ class CartPageTest(CartTestCase):
 
     def testTotalShouldBeFive(self):
         self.assertEqual(['5.0'], self.tree.xpath('//td[@class="total_price"]/text()'))
+
+class RemoveFromCartTest(CartTestCase):
+    def setUp(self):
+        super().setUp()
+        self.dispatch('/delete/1')
         
+    def testTotalIsZero(self):
+        self.assertEqual(['0.0'], self.tree.xpath('//td[@class="total_price"]/text()'))
+
+    def testEmptyCartIsDisplayed
+        self.assertIn('Empty cart', self.rv.data)
+
 if __name__ == '__main__':
     unittest.main()

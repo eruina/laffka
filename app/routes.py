@@ -37,7 +37,7 @@ def show_item(index):
 @app.route('/empty')
 def empty_cart():
     session.clear()
-    return redirect('/')
+    return redirect('/cart')
 
 @app.route('/add', methods=['POST'])
 def add_product_to_cart():
