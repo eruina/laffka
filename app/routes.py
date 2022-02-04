@@ -72,12 +72,13 @@ def add_product_to_cart():
             return redirect('/cart')
 
     else:
-        app.flash('Item not found','error')
         return redirect('/products')
 
 @app.route('/delete/<index>')
 def delete_product(index):
-    app.flash('Item removed from cart','info')
+    session['all_total_price'] -= session['cart'][index]['total_price']
+    session['all_total_quantity'] -= session['cart'][index]['quantity']
+    session['cart'].pop(index)
     return redirect('/cart')
 
 @app.route('/cart')
@@ -111,7 +112,6 @@ def pay_for_order ():
         return "Error, empty address"
     bitcoin=Bitcoin()
     database=Database()
-    #address=re.sub('[^A-Za-z0-9:_-]','',address)
     address_salt=address+configuration.Configuration.salt
     address_salt=address_salt.encode()
     address_hash=hashlib.sha224(address_salt).hexdigest()[0:9]
@@ -123,9 +123,7 @@ def pay_for_order ():
     item_amount=re.sub('[^0-9]', '', item_amount)
     item=database.fetch_one_item(item_index)
     order_price=round(item.price/bitcoin.btc_eur*float(item_amount),6)
-    #print (order_price)
     order=Bitcoin.order(item_index,address,address_hash,item_amount,order_price)
-    #print (order.order_index)
     return redirect("/pay/"+str(order.btc_address))
 
 @app.route('/pay/<btc_address>')
@@ -163,7 +161,6 @@ def login():
         password=hashlib.sha224(password).hexdigest()
         if((user==configuration.Configuration.user) and (password==configuration.Configuration.password)):
             session['adminkey']=hashlib.sha224(configuration.Configuration.secret_key.encode('utf-8')).hexdigest()
-            #print (session)
             return redirect ('/c')
     return render_template('login.html', form=form,header=configuration.Configuration.header)
 

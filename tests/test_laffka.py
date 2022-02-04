@@ -17,22 +17,28 @@ class LaffkaTestCase(unittest.TestCase):
         self.add_item()
         self.add_hidden_item()
 
+    def dispatch(self, url):
+        self.rv = self.app.get(url, follow_redirects=True)
+        self.tree = html.fromstring(self.rv.data)
+
+    def postDispatch(self, url, data):
+        self.rv = self.app.post(url, data=data, follow_redirects=True)
+        self.tree = html.fromstring(self.rv.data)
+
     def tearDown(self):
         os.close(self.db_fd)
         os.unlink(configuration.Configuration.database_url)
-        
+
     def login(self, username, password):
-        rv = self.app.get('/login')
-        tree = html.fromstring(rv.data)
-        token = tree.xpath('//input[@id="csrf_token"]/@value')
-        return self.app.post('/login', data=dict(
+        self.dispatch('/login')
+        token = self.tree.xpath('//input[@id="csrf_token"]/@value')
+        self.postDispatch('/login', dict(
             username=username,
             password=password,
-            csrf_token=token
-        ), follow_redirects=True)
+            csrf_token=token))
 
     def logout(self):
-        return self.app.get('/logout', follow_redirects=True)
+        return self.dispatch('/logout')
 
     def set_session(self):
         admin_key=hashlib.sha224(configuration.Configuration.secret_key.encode('utf-8')).hexdigest()
@@ -42,41 +48,41 @@ class LaffkaTestCase(unittest.TestCase):
 
     def add_item(self):
         self.set_session()
-        rv = self.app.post('/admin_item', data=dict(
+        self.postDispatch('/admin_item', dict(
             name='test item',
             price=1,
             avail=100,
             description='A truly <b>useless</b> stuff',
             index=1,
             pcs='1,5,10'
-        ), follow_redirects=True)
+        ))
 
     def add_hidden_item(self):
         self.set_session()
-        rv = self.app.post('/admin_item', data=dict(
+        self.postDispatch('/admin_item', dict(
             name='hidden item',
             price=1,
             avail=0,
             description='A truly <b>invisible</b> stuff',
             index=2,
             pcs='1,5,10'
-        ), follow_redirects=True)
+        ))
 
 class LoginLogout(LaffkaTestCase):
     def testOnLoginSuccessShouldDisplayOrders(self):
-        rv = self.login('test', 'test')
-        assert b'Orders' in rv.data
+        self.login('test', 'test')
+        assert b'Orders' in self.rv.data
 
     def testOnLogoutShouldDisplayLogin(self):
         self.login('test', 'test')
-        rv = self.logout()
-        assert b'Login' in rv.data
+        self.logout()
+        assert b'Login' in self.rv.data
 
     def testOnLoginFailureShouldDisplayLogin(self):
-        rv = self.login('testx', 'test')
-        assert b'Login' in rv.data
-        rv = self.login('test', 'testx')
-        assert b'Login' in rv.data
+        self.login('testx', 'test')
+        assert b'Login' in self.rv.data
+        self.login('test', 'testx')
+        assert b'Login' in self.rv.data
 
 class Homepage(LaffkaTestCase):
     def setUp(self):
@@ -89,8 +95,7 @@ class Homepage(LaffkaTestCase):
 class ProductsPage(LaffkaTestCase):
     def setUp(self):
         super().setUp()
-        self.rv = self.app.get('/products')
-        self.tree = html.fromstring(self.rv.data)        
+        self.dispatch('/products')
 
     def testItemIsPresentOnProductsPage(self):
         assert b'test item' in self.rv.data
@@ -106,9 +111,8 @@ class ProductsPage(LaffkaTestCase):
 class ItemDetailsPage(LaffkaTestCase) :
     def setUp(self):
         super().setUp()
-        self.rv = self.app.get('/item/1')
-        self.tree = html.fromstring(self.rv.data)
-        
+        self.dispatch('/item/1')
+
     def testItemOneDescriptionIsUselessStuffWithHtml(self):
         self.assertIn(b'A truly <b>useless</b> stuff',self.rv.data)
 
@@ -120,16 +124,16 @@ class ItemDetailsPage(LaffkaTestCase) :
         submit = self.tree.xpath('//form[@action="/add"]/input[@type="submit"]/@value')
         self.assertIn('Add to cart', submit)
 
-class CartTest(LaffkaTestCase):
+class CartTestCase(LaffkaTestCase):
     def setUp(self):
         super().setUp()
-        self.app.post('/add', data=dict(
+        self.postDispatch('/add', dict(
             item=1,
             quantity=5,
         ))
-        self.rv = self.app.get('/cart')
-        self.tree = html.fromstring(self.rv.data)
+        self.dispatch('/cart')
 
+class CartPageTest(CartTestCase):
     def testQtyInCartShouldBeFive(self):
         self.assertEqual(['5'], self.tree.xpath('//td[@id="quantity"]/text()'))
 
