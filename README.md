@@ -1,3 +1,10 @@
+# Realresurface
+
+05.02.2022 This project is notmaintainable. I've moved on to Allium, and developing  it under my real name.
+
+Please, follow it here
+https://github.com/sginne/Allium
+
 # Wiki for instructions!
 https://github.com/eruina/laffka/wiki
 
